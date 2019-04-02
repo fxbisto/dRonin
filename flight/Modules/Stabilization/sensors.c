@@ -59,6 +59,7 @@ extern pios_i2c_t external_i2c_adapter_id;
 #include "magnetometer.h"
 #include "magbias.h"
 #include "coordinate_conversions.h"
+#include "flightstatus.h"
 
 // Private constants
 #define MAX_SENSOR_PERIOD 6	// allow sensor data as slow as 166Hz
@@ -104,6 +105,7 @@ static volatile bool settings_updated = true;
 
 // These values are initialized by settings but can be updated by the attitude algorithm
 static bool bias_correct_gyro = true;
+static bool zero_during_arming = true;
 
 #ifdef PIOS_TOLERATE_MISSING_SENSORS
 SystemAlarmsAlarmOptions missing_sensor_severity = SYSTEMALARMS_ALARM_ERROR;
@@ -404,18 +406,28 @@ static void update_gyros(struct pios_sensor_gyro_data *gyros)
 		gyrosData.z = gyros_out[2];
 	}
 
-	if (bias_correct_gyro) {
+	if (bias_correct_gyro || zero_during_arming) {
 		// Apply bias correction to the gyros from the state estimator
-		GyrosBiasData gyrosBias;
-		GyrosBiasGet(&gyrosBias);
+		static GyrosBiasData gyrosBias = { 0 };
+		if (bias_correct_gyro) {
+			GyrosBiasGet(&gyrosBias);
+		} else {
+			uint8_t status;
+			FlightStatusArmedGet(&status);
+			if (status == FLIGHTSTATUS_ARMED_ARMING) {
+				/* Keep updating bias until we're entering armed status, then keep using
+				   those values, as they're the ones from gyro zeroing. */
+				GyrosBiasGet(&gyrosBias);
+			}
+		}
 		gyrosData.x -= gyrosBias.x;
 		gyrosData.y -= gyrosBias.y;
 		gyrosData.z -= gyrosBias.z;
 
 		const float GYRO_BIAS_WARN = 10.0f;
-		if (fabsf(gyrosBias.x) > GYRO_BIAS_WARN ||
+		if (bias_correct_gyro && (fabsf(gyrosBias.x) > GYRO_BIAS_WARN ||
 			fabsf(gyrosBias.y) > GYRO_BIAS_WARN ||
-			fabsf(gyrosBias.z) > GYRO_BIAS_WARN) {
+			fabsf(gyrosBias.z) > GYRO_BIAS_WARN)) {
 			AlarmsSet(SYSTEMALARMS_ALARM_GYROBIAS, SYSTEMALARMS_ALARM_WARNING);
 		} else {
 			AlarmsClear(SYSTEMALARMS_ALARM_GYROBIAS);
@@ -735,6 +747,10 @@ static void sensors_settings_update()
 	uint8_t bias_correct;
 	AttitudeSettingsBiasCorrectGyroGet(&bias_correct);
 	bias_correct_gyro = (bias_correct == ATTITUDESETTINGS_BIASCORRECTGYRO_TRUE);
+
+	uint8_t zero_gyros;
+	AttitudeSettingsZeroDuringArmingGet(&zero_gyros);
+	zero_during_arming = (zero_gyros == ATTITUDESETTINGS_ZERODURINGARMING_TRUE);
 
 	AttitudeSettingsData attitudeSettings;
 	AttitudeSettingsGet(&attitudeSettings);
