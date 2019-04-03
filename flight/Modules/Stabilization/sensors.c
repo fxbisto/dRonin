@@ -414,10 +414,12 @@ static void update_gyros(struct pios_sensor_gyro_data *gyros)
 		} else {
 			uint8_t status;
 			FlightStatusArmedGet(&status);
-			if (status != FLIGHTSTATUS_ARMED_ARMED) {
-				/* Keep updating bias until we're entering armed status, then keep using
-				   those values, as they're the ones from gyro zeroing. */
-				GyrosBiasGet(&gyrosBias);
+			if (status == FLIGHTSTATUS_ARMED_ARMING) {
+				/* We're ignoring the complementary filter and are taking the readings here.
+				   If you jostle it during arming, ya done goofed. */
+				gyrosBias.x = (gyrosBias.x + gyrosData.x) * 0.5f;
+				gyrosBias.y = (gyrosBias.y + gyrosData.y) * 0.5f;
+				gyrosBias.z = (gyrosBias.z + gyrosData.z) * 0.5f;
 			}
 		}
 		gyrosData.x -= gyrosBias.x;
