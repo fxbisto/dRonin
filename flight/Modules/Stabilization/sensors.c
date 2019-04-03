@@ -414,7 +414,7 @@ static void update_gyros(struct pios_sensor_gyro_data *gyros)
 		} else {
 			uint8_t status;
 			FlightStatusArmedGet(&status);
-			if (status == FLIGHTSTATUS_ARMED_ARMING) {
+			if (status != FLIGHTSTATUS_ARMED_ARMED) {
 				/* Keep updating bias until we're entering armed status, then keep using
 				   those values, as they're the ones from gyro zeroing. */
 				GyrosBiasGet(&gyrosBias);
