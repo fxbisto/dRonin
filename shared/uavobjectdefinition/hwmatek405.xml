@@ -34,12 +34,13 @@
         <option>OpenLog</option>
         <option>S.Bus</option>
         <option>S.Bus Non Inverted</option>
+        <option>VTX Config TBS SmartAudio</option>
         <option>Telemetry</option>
         <option>IBus</option>
         <option>TBS Crossfire</option>
       </options>
     </field>
-    <field defaultvalue="S.Bus" elements="1" name="Uart2" parent="HwShared.PortTypes" type="enum" units="function">
+    <field defaultvalue="Disabled" elements="1" name="Uart2" parent="HwShared.PortTypes" type="enum" units="function">
       <description/>
       <options>
         <option>Disabled</option>
@@ -61,12 +62,13 @@
         <option>OpenLog</option>
         <option>S.Bus</option>
         <option>S.Bus Non Inverted</option>
+        <option>VTX Config TBS SmartAudio</option>
         <option>Telemetry</option>
         <option>IBus</option>
         <option>TBS Crossfire</option>
       </options>
    </field>
-    <field defaultvalue="Disabled" elements="1" name="Uart3" parent="HwShared.PortTypes" type="enum" units="function">
+    <field defaultvalue="IBus" elements="1" name="Uart3" parent="HwShared.PortTypes" type="enum" units="function">
       <description/>
       <options>
         <option>Disabled</option>
@@ -88,21 +90,36 @@
         <option>OpenLog</option>
         <option>S.Bus</option>
         <option>S.Bus Non Inverted</option>
+        <option>VTX Config TBS SmartAudio</option>
         <option>Telemetry</option>
         <option>IBus</option>
         <option>TBS Crossfire</option>
       </options>
     </field>
-    <field defaultvalue="Disabled" elements="1" name="Uart4" parent="HwShared.PortTypes" type="enum" units="function">
+    <field defaultvalue="VTX Config TBS SmartAudio" elements="1" name="Uart4" parent="HwShared.PortTypes" type="enum" units="function">
       <description/>
       <options>
         <option>Disabled</option>
-        <option>FrSKY Sensor Hub</option>
+        <option>ComBridge</option>
+        <option>DebugConsole</option>
+        <option>DSM</option>
+		<option>FrSKY Sensor Hub</option>
         <option>FrSKY SPort Telemetry</option>
         <option>FrSKY SPort Non Inverted</option>
-        <option>OpenLog</option>
+        <option>GPS</option>
         <option>SRXL</option>
+        <option>HoTT SUMD</option>
+        <option>HoTT SUMH</option>
+        <option>HoTT Telemetry</option>
+        <option>LighttelemetryTx</option>
+        <option>MavLinkTX</option>
+        <option>MavLinkTX_GPS_RX</option>
+        <option>MSP</option>
+        <option>OpenLog</option>
+        <option>S.Bus Non Inverted</option>
+        <option>VTX Config TBS SmartAudio</option>
         <option>Telemetry</option>
+        <option>IBus</option>
         <option>TBS Crossfire</option>
       </options>
     </field>
@@ -127,12 +144,13 @@
         <option>MSP</option>
         <option>OpenLog</option>
         <option>S.Bus Non Inverted</option>
+        <option>VTX Config TBS SmartAudio</option>
         <option>Telemetry</option>
         <option>IBus</option>
         <option>TBS Crossfire</option>
       </options>
     </field>
-    <field defaultvalue="Disabled" elements="1" name="OSDPort" type="enum" units="function">
+    <field defaultvalue="MAX7456 OSD" elements="1" name="OSDPort" type="enum" units="function">
       <description/>
       <options>
         <option>Disabled</option>
@@ -152,7 +170,7 @@
     <field defaultvalue="Autodetect" elements="1" name="DSMxMode" parent="HwShared.DSMxMode" type="enum" units="mode">
       <description/>
     </field>
-    <field defaultvalue="1000" elements="1" name="GyroRange" type="enum" units="deg/s">
+    <field defaultvalue="2000" elements="1" name="GyroRange" type="enum" units="deg/s">
       <description/>
       <options>
         <option>250</option>
