@@ -59,6 +59,7 @@ typedef struct {
 	} flight_status;
 	struct {
 		uint32_t flight_time;
+        float temp_for_osd;
 	} system;
 } telemetry_t;
 

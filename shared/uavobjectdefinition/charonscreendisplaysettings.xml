@@ -33,6 +33,7 @@
         <option>Altitude</option>
         <option>ArmedFlag</option>
         <option>BatteryVolt</option>
+        <option>AvgCellVolt</option>
         <option>BatteryCurrent</option>
         <option>BatteryConsumed</option>
         <option>Callsign</option>

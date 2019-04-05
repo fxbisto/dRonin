@@ -74,7 +74,7 @@
 #define STACK_SIZE_BYTES 3072
 #define TASK_PRIORITY PIOS_THREAD_PRIO_LOW
 
-#define SPLASH_TIME_MS (5*1000)
+#define SPLASH_TIME_MS (3*1000)
 
 bool module_enabled;
 
@@ -241,6 +241,7 @@ static void update_telemetry(charosd_state_t state)
 	StabilizationDesiredThrustGet(&state->telemetry.manual.thrust);
 	FlightStatusArmedGet(&state->telemetry.flight_status.arm_status);
 	FlightStatusFlightModeGet(&state->telemetry.flight_status.mode);
+    AccelstemperatureGet(&state->telemetry.system.temp_for_osd);
 
 	if (HAS_SENSOR(state->available, HAS_BATT)) {
 		FlightBatteryStateGet(&state->telemetry.battery);
@@ -261,7 +262,7 @@ static void splash_screen(charosd_state_t state)
 {
 	PIOS_MAX7456_clear (state->dev);
 
-	const char *welcome_msg = "Welcome to dRonin";
+	const char *welcome_msg = "-- dRonin-MQF --";
 
 	SystemAlarmsData alarm;
 	SystemAlarmsGet(&alarm);

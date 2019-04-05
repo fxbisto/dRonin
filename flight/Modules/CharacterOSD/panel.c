@@ -65,6 +65,7 @@
 #include "flightstatus.h"
 #include "systemalarms.h"
 #include "modulesettings.h"
+#include "accels.h"
 
 static inline float pythag(float a, float b) {
 	return sqrtf(a * a + b * b);
@@ -177,25 +178,25 @@ static void FLIGHTMODE_update(charosd_state_t state, uint8_t x, uint8_t y)
 		mode = "HRZN";
 		break;
 	case FLIGHTSTATUS_FLIGHTMODE_AXISLOCK:
-		mode = "ALCK";
+		mode = "AXLOCK";
 		break;
 	case FLIGHTSTATUS_FLIGHTMODE_VIRTUALBAR:
 		mode = "VBAR";
 		break;
 	case FLIGHTSTATUS_FLIGHTMODE_STABILIZED1:
-		mode = "ST1";
+		mode = "CUSTM1";
 		break;
 	case FLIGHTSTATUS_FLIGHTMODE_STABILIZED2:
-		mode = "ST2";
+		mode = "CUSTM2";
 		break;
 	case FLIGHTSTATUS_FLIGHTMODE_STABILIZED3:
-		mode = "ST3";
+		mode = "CUSTM3";
 		break;
 	case FLIGHTSTATUS_FLIGHTMODE_AUTOTUNE:
 		mode = "TUNE";
 		break;
 	case FLIGHTSTATUS_FLIGHTMODE_ALTITUDEHOLD:
-		mode = "AHLD";
+		mode = "BARO";
 		break;
 	case FLIGHTSTATUS_FLIGHTMODE_POSITIONHOLD:
 		mode = "PHLD";
@@ -207,27 +208,26 @@ static void FLIGHTMODE_update(charosd_state_t state, uint8_t x, uint8_t y)
 		mode = "PLAN";
 		break;
 	case FLIGHTSTATUS_FLIGHTMODE_ACRODYNE:
-		mode = "ACDN";
+		mode = "ACRO-D";
 		break;
 	case FLIGHTSTATUS_FLIGHTMODE_FAILSAFE:
-		mode = "FAIL";
+		mode = "FAILSF";
 		break;
 	case FLIGHTSTATUS_FLIGHTMODE_TABLETCONTROL:
 		// There are many sub modes here that could be filled in.
 		mode = "TAB";
 		break;
 	case FLIGHTSTATUS_FLIGHTMODE_LQG:
-		mode = "LQGR";
+		mode = "LQG-R";
 		break;
 	case FLIGHTSTATUS_FLIGHTMODE_LQGLEVELING:
-		mode = "LQGL";
+		mode = "LQG-L";
 		break;
 	case FLIGHTSTATUS_FLIGHTMODE_FLIPREVERSED:
-		mode = "FLIP";
+		mode = "CR-FLP";
 		break;
 	}
 
-	draw_rect(state, x, y, 6, 3, 0, 0);
 	PIOS_MAX7456_puts(state->dev, x + 1, y + 1, mode, 0);
 }
 
@@ -348,13 +348,15 @@ STD_PANEL(GROUNDSPEED, 7, "\x80%d\x81",
 				state->telemetry.velocity_actual.East) * 3.6f));
 // * 3.6 == m/s to km/hr
 
-STD_PANEL(BATTERYVOLT, 8, "%.2f\x8e", (double)state->telemetry.battery.Voltage);
+STD_PANEL(BATTERYVOLT, 8, "%.1f\x8e", (double)state->telemetry.battery.Voltage);
+
+STD_PANEL(AVGCELLVOLT, 8, "\xef%.1f\x8e", (double)(state->telemetry.battery.Voltage/state->telemetry.battery.DetectedCellCount));
 
 /* BatCurrent */
-STD_PANEL(BATTERYCURRENT, 8, "%.2f\x8f", (double)state->telemetry.battery.Current);
+STD_PANEL(BATTERYCURRENT, 8, "%.1f\x8f", (double)state->telemetry.battery.Current);
 
 /* BatConsumed */
-STD_PANEL(BATTERYCONSUMED, 8, "%u\x82", (uint16_t) state->telemetry.battery.ConsumedEnergy);
+STD_PANEL(BATTERYCONSUMED, 8, "\x82%u", (uint16_t) state->telemetry.battery.ConsumedEnergy);
 
 /* RSSIFlag */
 static void RSSIFLAG_update (charosd_state_t state, uint8_t x, uint8_t y)
@@ -402,8 +404,8 @@ STD_PANEL(HEADING, 6, "%d%c", (int)(round(state->telemetry.attitude_actual.Yaw)+
 /* Callsign */
 STD_PANEL(CALLSIGN, 11, "%s", state->custom_text);
 
-/* Temperature - XXX TODO */
-STD_PANEL(TEMPERATURE, 9, "\xfd%.1f\x8a", /*XXX:telemetry::environment::temperature*/ 0.0);
+/* temp read from gyro IC */
+STD_PANEL(TEMPERATURE, 9, "\xfd%d\x8a", (int)round(0-(-state->telemetry.system.temp_for_osd)));
 
 /* RSSI */
 static void RSSI_update(charosd_state_t state, uint8_t x, uint8_t y)
@@ -487,6 +489,7 @@ const panel_t panels [CHARONSCREENDISPLAYSETTINGS_PANELTYPE_MAXOPTVAL+1] = {
 	declare_panel(ALTITUDE, HAS_ALT),
 	declare_panel(ARMEDFLAG, 0),
 	declare_panel(BATTERYVOLT, HAS_BATT),
+	declare_panel(AVGCELLVOLT, HAS_BATT),
 	declare_panel(BATTERYCURRENT, HAS_BATT),
 	declare_panel(BATTERYCONSUMED, HAS_BATT),
 	declare_panel(CALLSIGN, 0),
@@ -506,7 +509,7 @@ const panel_t panels [CHARONSCREENDISPLAYSETTINGS_PANELTYPE_MAXOPTVAL+1] = {
 	declare_panel(ROLL, 0),
 	declare_panel(RSSIFLAG, HAS_RSSI),
 	declare_panel(RSSI, HAS_RSSI),
-	declare_panel(TEMPERATURE, HAS_TEMP),
+	declare_panel(TEMPERATURE, 0),
 	declare_panel(THROTTLE, 0),
 	declare_panel(CROSSHAIR, 0),
 	declare_panel(ALARMS, 0),
