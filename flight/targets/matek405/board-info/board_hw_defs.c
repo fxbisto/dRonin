@@ -862,30 +862,29 @@ static const struct pios_tim_clock_cfg tim_4_cfg = {
 
 /*
  * Outputs
-	1:  TIM3_CH1 (PC6)        DMA1 Stream 2 Channel 5
-	2:  TIM8_CH2 (PC7)        DMA2 Stream 1 Channel 7
+	1:  TIM5_CH2 (PA1)
+	2:  TIM8_CH2 (PC7)
 	3:  TIM8_CH3 (PC8)
 	4:  TIM8_CH4 (PC9)
-	5:  TIM2_CH1 (PA15)       DMA1 Stream 1 Channel 3
-	6:  TIM1_CH1 (PA8)        DMA2 Stream 5 Channel 6
-	7:  TIM4_CH3 (PB8)        DMA1 Stream 6 Channel 2
+    5:  TIM2_CH1 (PA15)
+    6:  TIM1_CH1 (PA8)
  */
 
 static const struct pios_tim_channel pios_tim_outputs_pins_without_led_string[] = {
 	{
-		.timer = TIM3,
-		.timer_chan = TIM_Channel_1,
-		.remap = GPIO_AF_TIM3,
+		.timer = TIM5,
+		.timer_chan = TIM_Channel_2,
+		.remap = GPIO_AF_TIM5,
 		.pin = {
-			.gpio = GPIOC,
+			.gpio = GPIOA,
 			.init = {
-				.GPIO_Pin   = GPIO_Pin_6,
+				.GPIO_Pin   = GPIO_Pin_1,
 				.GPIO_Speed = GPIO_Speed_2MHz,
 				.GPIO_Mode  = GPIO_Mode_AF,
 				.GPIO_OType = GPIO_OType_PP,
 				.GPIO_PuPd  = GPIO_PuPd_NOPULL
 			},
-			.pin_source = GPIO_PinSource6,
+			.pin_source = GPIO_PinSource1,
 		},
 	},
 	{
@@ -968,39 +967,23 @@ static const struct pios_tim_channel pios_tim_outputs_pins_without_led_string[] 
 			.pin_source = GPIO_PinSource8,
 		},
 	},
-	{
-		.timer = TIM4,
-		.timer_chan = TIM_Channel_3,
-		.remap = GPIO_AF_TIM4,
-		.pin = {
-			.gpio = GPIOB,
-			.init = {
-				.GPIO_Pin   = GPIO_Pin_8,
-				.GPIO_Speed = GPIO_Speed_2MHz,
-				.GPIO_Mode  = GPIO_Mode_AF,
-				.GPIO_OType = GPIO_OType_PP,
-				.GPIO_PuPd  = GPIO_PuPd_NOPULL
-			},
-			.pin_source = GPIO_PinSource8,
-		},
-	},
 };
 
 static const struct pios_tim_channel pios_tim_outputs_pins_with_led_string[] = {
-	{
-		.timer = TIM3,
-		.timer_chan = TIM_Channel_1,
-		.remap = GPIO_AF_TIM3,
+{
+		.timer = TIM5,
+		.timer_chan = TIM_Channel_2,
+		.remap = GPIO_AF_TIM5,
 		.pin = {
-			.gpio = GPIOC,
+			.gpio = GPIOA,
 			.init = {
-				.GPIO_Pin   = GPIO_Pin_6,
+				.GPIO_Pin   = GPIO_Pin_1,
 				.GPIO_Speed = GPIO_Speed_2MHz,
 				.GPIO_Mode  = GPIO_Mode_AF,
 				.GPIO_OType = GPIO_OType_PP,
 				.GPIO_PuPd  = GPIO_PuPd_NOPULL
 			},
-			.pin_source = GPIO_PinSource6,
+			.pin_source = GPIO_PinSource1,
 		},
 	},
 	{
@@ -1067,97 +1050,18 @@ static const struct pios_tim_channel pios_tim_outputs_pins_with_led_string[] = {
 			.pin_source = GPIO_PinSource15,
 		},
 	},
-	{
-		.timer = TIM4,
-		.timer_chan = TIM_Channel_3,
-		.remap = GPIO_AF_TIM4,
-		.pin = {
-			.gpio = GPIOB,
-			.init = {
-				.GPIO_Pin   = GPIO_Pin_8,
-				.GPIO_Speed = GPIO_Speed_2MHz,
-				.GPIO_Mode  = GPIO_Mode_AF,
-				.GPIO_OType = GPIO_OType_PP,
-				.GPIO_PuPd  = GPIO_PuPd_NOPULL
-			},
-			.pin_source = GPIO_PinSource8,
-		},
-	},
 };
 
 #if defined(PIOS_INCLUDE_DMASHOT)
 
 #include <pios_dmashot.h>
 
-/*
- * Outputs
-	1:  TIM3_CH1 (PC6)        DMA1 Stream 2 Channel 5
-	2:  TIM8_CH2 (PC7)        DMA2 Stream 1 Channel 7
-	3:  TIM8_CH3 (PC8)
-	4:  TIM8_CH4 (PC9)
-	5:  TIM2_CH1 (PA15)       DMA1 Stream 1 Channel 3
-	6:  TIM1_CH1 (PA8)        DMA2 Stream 5 Channel 6
-	7:  TIM4_CH3 (PB8)        DMA1 Stream 6 Channel 2
- */
-  
  static const struct pios_dmashot_timer_cfg dmashot_tim_cfg_without_led_string[] = {
-	{
-		.timer   = TIM3,
-		.stream  = DMA1_Stream2,
-		.channel = DMA_Channel_5,
-		.tcif    = DMA_FLAG_TCIF2
-	},
-	{
-		.timer   = TIM8,
-		.stream  = DMA2_Stream1,
-		.channel = DMA_Channel_7,
-		.tcif    = DMA_FLAG_TCIF1
-	},
-	{
-		.timer   = TIM2,
-		.stream  = DMA1_Stream1,
-		.channel = DMA_Channel_3,
-		.tcif    = DMA_FLAG_TCIF1
-	},
-	{
-		.timer   = TIM1,
-		.stream  = DMA2_Stream5,
-		.channel = DMA_Channel_6,
-		.tcif    = DMA_FLAG_TCIF5
-	},
-	{
-		.timer   = TIM4,
-		.stream  = DMA1_Stream6,
-		.channel = DMA_Channel_2,
-		.tcif    = DMA_FLAG_TCIF6
-	},
+// We'll let PIOS populate this automatically.
 };
 
  static const struct pios_dmashot_timer_cfg dmashot_tim_cfg_with_led_string[] = {
-	{
-		.timer   = TIM3,
-		.stream  = DMA1_Stream2,
-		.channel = DMA_Channel_5,
-		.tcif    = DMA_FLAG_TCIF2
-	},
-	{
-		.timer   = TIM8,
-		.stream  = DMA2_Stream1,
-		.channel = DMA_Channel_7,
-		.tcif    = DMA_FLAG_TCIF1
-	},
-	{
-		.timer   = TIM2,
-		.stream  = DMA1_Stream1,
-		.channel = DMA_Channel_3,
-		.tcif    = DMA_FLAG_TCIF1
-	},
-	{
-		.timer   = TIM4,
-		.stream  = DMA1_Stream6,
-		.channel = DMA_Channel_2,
-		.tcif    = DMA_FLAG_TCIF6
-	},
+// We'll let PIOS populate this automatically.
 };
 
 static const struct pios_dmashot_cfg dmashot_config_without_led_string = {
