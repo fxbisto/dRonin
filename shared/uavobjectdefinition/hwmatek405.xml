@@ -188,9 +188,10 @@
         <option>16G</option>
       </options>
     </field>
-    <field defaultvalue="188" elements="1" name="MPU6000_LPF_CTR" type="enum" units="">
+    <field defaultvalue="256" elements="1" name="MPU6000_LPF_CTR" type="enum" units="">
       <description/>
       <options>
+        <option>256</option>
         <option>188</option>
         <option>98</option>
         <option>42</option>
