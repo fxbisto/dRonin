@@ -150,7 +150,7 @@ void ExpoCurve::plotData(int value, int max, int exponent, ExpoPlotElements_t &p
     setAxisAutoScale(yLeft, true);
     updateAxes();
     const QwtScaleDiv &div = axisScaleDiv(yLeft);
-    setAxisScale(yLeft, 0, div.upperBound(), 180);
+    setAxisScale(yLeft, 0, div.upperBound(), 200);
 
     this->replot();
 }
